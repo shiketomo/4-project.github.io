@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ログイン</title>
+</head>
+<body>
+  <h1>ログイン</h1>
+  <form action="{{ url_for('login') }}" method="post">
+    <input type="hidden" name="next" value="{{ request.args.get('next','') }}">
+    <p><input type="text" name="username" placeholder="ユーザー名" required></p>
+    <p><input type="password" name="password" placeholder="パスワード" required></p>
+    <input type="submit" value="ログイン">
+  </form>
+  <p>新規登録は <a href="{{ url_for('register') }}">こちら</a></p>
+</body>
+</html>
