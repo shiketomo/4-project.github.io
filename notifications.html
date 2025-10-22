@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>通知</title></head>
+<body>
+  <h1>通知（未読コメント）</h1>
+  <p><a href="{{ url_for('index') }}">マイページ</a> ｜ <a href="{{ url_for('public') }}">公開一覧</a></p>
+  {% if notifications %}
+    <ul>
+      {% for n in notifications %}
+        <li>
+          <b>{{ n.book }}</b> に対するコメント: "{{ n.text }}" — {{ n.author }}（{{ n.time }}）
+          <form action="{{ url_for('mark_read', owner=session['user'], book=n.book) }}" method="post" style="display:inline;">
+            <input type="submit" value="既読にする">
+          </form>
+          <a href="{{ url_for('book_detail', owner=session['user'], book=n.book) }}">詳細へ</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>未読のコメントはありません。</p>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>登録</title></head>
+<body>
+  <h1>ユーザー登録</h1>
+  <form action="{{ url_for('register') }}" method="post">
+    <p><input type="text" name="username" placeholder="ユーザー名" required></p>
+    <p><input type="password" name="password" placeholder="パスワード" required></p>
+    <input type="submit" value="登録">
+  </form>
+  <p>ログインは <a href="{{ url_for('login') }}">こちら</a></p>
+</body>
+</html>

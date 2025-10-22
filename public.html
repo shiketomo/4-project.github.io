@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>公開出品一覧</title>
+  <style>
+    body{font-family:sans-serif;margin:20px}
+    .item{display:inline-block;border:1px solid #ddd;padding:10px;margin:8px;width:220px;vertical-align:top}
+    img{width:100%;height:140px;object-fit:cover;border-radius:4px}
+    mark{background:yellow}
+    .top{margin-bottom:10px}
+  </style>
+</head>
+<body>
+  <h1>:複数の本: 公開出品一覧</h1>
+  <form method="get" class="top">
+    <input type="text" name="q" placeholder="キーワード検索" value="{{ keyword|default('') }}">
+    <select name="sort">
+      <option value="new" {% if sort=='new' %}selected{% endif %}>並び替え: 新着</option>
+      <option value="price_asc" {% if sort=='price_asc' %}selected{% endif %}>並び替え: 価格↑</option>
+      <option value="price_desc" {% if sort=='price_desc' %}selected{% endif %}>並び替え: 価格↓</option>
+    </select>
+    <button type="submit">検索/並び替え</button>
+    {% if keyword %}
+      <a href="/public">クリア</a>
+    {% endif %}
+  </form>
+  {% if current_user %}
+    <p>ようこそ、{{ current_user }} さん　
+       <a href="{{ url_for('index') }}">自分の投稿</a>　
+       <a href="{{ url_for('notifications') }}">通知</a>　
+       <a href="{{ url_for('logout') }}">ログアウト</a>
+    </p>
+  {% else %}
+    <p><a href="{{ url_for('login') }}">ログイン</a> ｜ <a href="{{ url_for('register') }}">新規登録</a></p>
+  {% endif %}
+  {% if data %}
+    {% for user, books in data.items() %}
+      <h3>出品者: {{ user }}</h3>
+      {% for book, info in books.items() %}
+        <div class="item">
+          <a href="{{ url_for('book_detail', owner=user, book=book) }}"><b>{{ info.title|safe }}</b></a>
+          <p>{{ info.author|safe }}</p>
+          <p>授業: {{ info.course|safe }}</p>
+          {% if info.images and info.images|length>0 %}
+            <a href="{{ url_for('book_detail', owner=user, book=book) }}">
+              <img src="/static/uploads/{{ info.images[0] }}">
+            </a>
+          {% endif %}
+          <p><a href="{{ url_for('book_detail', owner=user, book=book) }}">詳細を見る</a></p>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  {% else %}
+    <p>該当する出品はありません。</p>
+  {% endif %}
+</body>
+</html>
