@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>教科書フリマ（完全版）</title>
+    <style>
+        .card { display:inline-block; text-align:left; margin:10px; border:1px solid #ccc; padding:10px; width:250px; vertical-align:top; }
+        img { width:100%; margin-bottom:5px; }
+        input[type=text] { width:95%; margin-bottom:4px; }
+        .delete-info { background-color:#f88; color:white; }
+        .flash { color:red; }
+    </style>
+</head>
+<body>
+    <h1>教科書フリマへようこそ</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flash">
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <!-- 登録フォーム -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <p><input type="text" name="title" placeholder="教科書名" required></p>
+        <p><input type="text" name="author" placeholder="著者名"></p>
+        <p><input type="text" name="price" placeholder="値段"></p>
+        <p><input type="text" name="condition" placeholder="使用感"></p>
+        <p><input type="text" name="note" placeholder="備考"></p>
+        <p><input type="text" name="course" placeholder="使用授業名"></p>
+        <p><input type="file" name="images" multiple required></p>
+        <input type="submit" value="登録">
+    </form>
+    <hr>
+    <!-- 検索 -->
+    <form action="/" method="post">
+        <input type="text" name="query" placeholder="検索" value="{{ query }}" style="width:200px;">
+        <input type="submit" value="検索">
+    </form>
+    <h2>登録済み商品一覧</h2>
+    {% for book, info in data.items() %}
+        <div class="card">
+            <p><b>教科書名:</b> {{ info.title }}</p>
+            <p><b>著者名:</b> {{ info.author }}</p>
+            <p><b>値段:</b> {{ info.price }}</p>
+            <p><b>使用感:</b> {{ info.condition }}</p>
+            <p><b>備考:</b> {{ info.note }}</p>
+            <p><b>授業名:</b> {{ info.course }}</p>
+            {% for img in info.images %}
+                <img src="/static/uploads/{{ img }}">
+                <form action="/delete_image/{{ book }}/{{ img }}" method="post">
+                    <input type="submit" value="画像削除">
+                </form>
+            {% endfor %}
+            <!-- 説明文削除 -->
+            <form action="/delete_info/{{ book }}" method="post" style="margin-top:5px;">
+                <input type="submit" value="説明文削除（画像も削除）" class="delete-info">
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html>
